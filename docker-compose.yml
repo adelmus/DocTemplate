@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+
+  testweb1:
+    # image: mcr.microsoft.com/dotnet/aspnet:6.0
+    build: .
+    command: dotnet /app/WebApplication1.dll
+    ports:
+        - 8005:80
+    volumes:
+        - ./fonts:/fonts
+        - ./tmp:/tmp
+
+    #   - ./:/app
