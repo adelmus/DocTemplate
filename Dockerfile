@@ -17,6 +17,11 @@ FROM build AS publish
 RUN dotnet publish "DocTemplate.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+RUN apt-get update; apt-get install -y libicu-dev libharfbuzz0b libfontconfig1 fontconfig
+RUN apt-get install -y apt-utils libgdiplus libc6-dev
+COPY ./fonts /usr/share/fonts/truetype/ms
+RUN fc-cache -f -v
+
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "DocTemplate.dll"]
+#ENTRYPOINT ["dotnet", "DocTemplate.dll"]
