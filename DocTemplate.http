@@ -1,0 +1,20 @@
+@API_HostAddress = https://localhost:7105
+
+GET {{API_HostAddress}}/Document/download/test.docx/?name=abc
+Accept: application/pdf
+
+###
+
+POST {{API_HostAddress}}/Document
+Content-Type: application/json
+
+{
+    "FileName": "/files/test.docx",
+    "fields" : {
+        "name": "Imie",
+        "surname": "Nazwisko"
+    }
+    
+}
+
+###
