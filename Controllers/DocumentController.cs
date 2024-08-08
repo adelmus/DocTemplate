@@ -49,7 +49,7 @@ namespace DocumentTemplate.Controllers
         //public IEnumerable<string> GetList(string fileName)
         public async Task<IActionResult> GetList(string fileName)
         {
-            if(!System.IO.File.Exists(fileName))
+            if(!System.IO.File.Exists($"/files/{fileName}"))
             {
                 return BadRequest("Brak podanego pliku w lokalizacji dokumentów");
             }
@@ -60,7 +60,7 @@ namespace DocumentTemplate.Controllers
         [HttpPost]
         public async Task<IActionResult> GenerateDocument(DocField docField)
         {
-            if (!System.IO.File.Exists(docField.FileName))
+            if (!System.IO.File.Exists($"/files/{docField.FileName}"))
             {
                 return BadRequest("Brak podanego pliku w lokalizacji dokumentów");
             }

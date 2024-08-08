@@ -18,30 +18,26 @@ namespace DocumentTemplate
         { 
             CreateBarCodePages cr = new CreateBarCodePages();
             
-            Document document = new Document(docField.FileName, FileFormat.Auto);
-            int pages = document.PageCount;            
-
-            if(docField.IsQRcode)
-            {
-                //foreach (Section section in document.Sections)
-                //{
-                //    //section.Paragraphs.Add(cr.GetBarCode(section, "IN008978DOCXXXX", 1, 1));
-                //    section.Paragraphs.Add(cr.GetQRCode(section, code, 1, 1));
-                //}
-            }
-
-            if (docField.IsBarcode)
-            {
-                //foreach (Section section in document.Sections)
-                //{
-                //    //section.Paragraphs.Add(cr.GetBarCode(section, "IN008978DOCXXXX", 1, 1));
-                //    section.Paragraphs.Add(cr.GetQRCode(section, code, 1, 1));
-                //}
-            }
+            Document document = new Document($"/files/{docField.FileName}", FileFormat.Auto);
+            int pages = document.PageCount;
+            int pageCount = 1;
+            foreach (Section section in document.Sections)
+            {                
+                
+                if (docField.IsQRcode)
+                {
+                    section.Paragraphs.Add(cr.GetQRCode(section, docField.code, pages, pageCount, docField.Position.Height, docField.Position.Width, docField.Position.HorizontalPosition, docField.Position.VerticalPosition));
+                }
+                if (docField.IsBarcode)
+                {                    
+                    section.Paragraphs.Add(cr.GetBarCode(section, docField.code, pages, pageCount, docField.Position.Height, docField.Position.Width, docField.Position.HorizontalPosition, docField.Position.VerticalPosition));                
+                }
+                pageCount++;
+            }            
 
             ToPdfParameterList parameters = new ToPdfParameterList();
-            PrivateFontPath fontPath = new PrivateFontPath("c39hrp24dltt", "fonts/c39hrp24dltt.ttf");
-            parameters.PrivateFontPaths.Add(fontPath);
+            //PrivateFontPath fontPath = new PrivateFontPath("c39hrp24dltt", "fonts/c39hrp24dltt.ttf");
+            //parameters.PrivateFontPaths.Add(fontPath);
 
             document.MailMerge.Execute(docField.Fields.Keys.ToArray(), docField.Fields.Values.ToArray());  
             document.IsUpdateFields = true;

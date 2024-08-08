@@ -51,7 +51,7 @@ namespace DocumentTemplate
 
         }
 
-        public Paragraph GetBarCode(Section section, string code, int totalPages, int Page)
+        public Paragraph GetBarCodeOld(Section section, string code, int totalPages, int Page)
         {
             Paragraph paragraph = section.AddParagraph();
             //Paragraph paragraph = new Paragraph(doc);
@@ -103,8 +103,24 @@ namespace DocumentTemplate
             return generator.GenerateImage();
         }
 
+        public Image GetBarCodeImage(string code)
+        {
+            BarcodeSettings settings = new BarcodeSettings();
+            settings.Type = BarCodeType.Code128;
 
-        public Paragraph GetQRCode(Section section, string code, int totalPages, int Page)
+            settings.Data = code;
+            settings.Data2D = code;            
+            //settings.X = 1.0f;
+            settings.Rotate = 90f;
+            settings.ShowText = true;            
+
+            BarCodeGenerator generator = new BarCodeGenerator(settings);
+            //Image image = generator.GenerateImage();
+            //image.Save("QRCode.png");
+            return generator.GenerateImage();
+        }
+
+        public Paragraph GetQRCode(Section section, string code, int totalPages, int Page, float height, float width, float horizontalPosition, float verticalPosition)
         {
             Paragraph paragraph = section.AddParagraph();
 
@@ -112,14 +128,14 @@ namespace DocumentTemplate
             //Paragraph paragraph = new Paragraph(doc);
 
             //Append a Textbox to paragraph
-            TextBox tb = paragraph.AppendTextBox(45, 40);
+            TextBox tb = paragraph.AppendTextBox(height, width);
 
             //Set the position of Textbox
             tb.Format.HorizontalOrigin = HorizontalOrigin.Page;
-            tb.Format.HorizontalPosition = 4;
+            tb.Format.HorizontalPosition = horizontalPosition;
             tb.Format.VerticalOrigin = VerticalOrigin.Page;
             //tb.Format.VerticalPosition = section.PageSetup.PageSize.Height - 40f;
-            tb.Format.VerticalPosition = 60f;
+            tb.Format.VerticalPosition = verticalPosition;
             tb.Format.LineColor = Color.Transparent;
             tb.Format.FillColor = Color.Transparent;
             //tb.Format.LayoutFlowAlt = TextDirection.LeftToRight;
@@ -128,7 +144,35 @@ namespace DocumentTemplate
             tb.Format.FillEfects.Type = BackgroundType.Picture;
 
             //Fill the Textbox with a picture
-            tb.Format.FillEfects.Picture = GetQRcodeImage($"{code}{totalPages:00}{Page:00}:LT");
+            tb.Format.FillEfects.Picture = GetQRcodeImage($"{code}:{totalPages:00}:{Page:00}");
+            return paragraph;
+        }
+
+        public Paragraph GetBarCode(Section section, string code, int totalPages, int Page, float height, float width, float horizontalPosition, float verticalPosition)
+        {
+            Paragraph paragraph = section.AddParagraph();
+
+
+            //Paragraph paragraph = new Paragraph(doc);
+
+            //Append a Textbox to paragraph
+            TextBox tb = paragraph.AppendTextBox(height, width);
+
+            //Set the position of Textbox
+            tb.Format.HorizontalOrigin = HorizontalOrigin.Page;
+            tb.Format.HorizontalPosition = horizontalPosition;
+            tb.Format.VerticalOrigin = VerticalOrigin.Page;
+            //tb.Format.VerticalPosition = section.PageSetup.PageSize.Height - 40f;
+            tb.Format.VerticalPosition = verticalPosition;
+            tb.Format.LineColor = Color.Transparent;
+            tb.Format.FillColor = Color.Transparent;
+            //tb.Format.LayoutFlowAlt = TextDirection.LeftToRight;
+
+            //Set the fill effect of Textbox as picture
+            tb.Format.FillEfects.Type = BackgroundType.Picture;
+
+            //Fill the Textbox with a picture
+            tb.Format.FillEfects.Picture = GetBarCodeImage($"{code}{totalPages:00}{Page:00}");
             return paragraph;
         }
     }
